@@ -30,7 +30,11 @@ export function Sidebar({
   collapsible = false,
   homeHref = "/",
 }: Readonly<SidebarProps>) {
-  const initials = useMemo(() => (pathname.startsWith("/admin") ? "AD" : "ST"), [pathname]);
+  const initials = useMemo(() => {
+    if (pathname.startsWith("/admin")) return "AD";
+    if (pathname.startsWith("/mentor")) return "MT";
+    return "ST";
+  }, [pathname]);
   const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
@@ -46,13 +50,26 @@ export function Sidebar({
   }, [collapsed, collapsible]);
 
   return (
-    <aside className={cn("hidden border-r border-black bg-black text-white lg:flex lg:flex-col", collapsible && !collapsed ? "w-60" : "w-20")}>
+    <aside
+      className={cn(
+        "hidden border-r border-black bg-black text-white transition-[width] duration-300 ease-in-out lg:flex lg:flex-col",
+        collapsible && !collapsed ? "w-60" : "w-20",
+      )}
+    >
       <div className={cn("flex h-20 items-center px-3", collapsible && !collapsed ? "justify-between" : "justify-center")}>
-        {collapsed ? null : (
-          <Link href={homeHref} className="inline-flex h-12 w-12 items-center justify-center border border-surface bg-surface font-sans text-h3 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">
-            CF
-          </Link>
-        )}
+        <Link
+          href={homeHref}
+          aria-hidden={collapsed}
+          tabIndex={collapsed ? -1 : 0}
+          className={cn(
+            "inline-flex h-12 w-12 items-center justify-center border border-surface bg-surface font-sans text-h3 text-foreground transition-all duration-300 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white",
+            collapsed
+              ? "pointer-events-none absolute left-3 scale-90 opacity-0"
+              : "relative scale-100 opacity-100",
+          )}
+        >
+          CF
+        </Link>
         {collapsible ? (
           <button
             type="button"
@@ -65,7 +82,7 @@ export function Sidebar({
           </button>
         ) : null}
       </div>
-      <nav className="flex-1 space-y-2 p-3" aria-label="Sidebar navigation">
+      <nav className="flex-1 space-y-5 p-3" aria-label="Sidebar navigation">
         {navItems.map((item) => {
           const active = item.match === "exact"
             ? pathname === item.href
@@ -84,7 +101,15 @@ export function Sidebar({
               )}
             >
               <Icon className="h-5 w-5" aria-hidden="true" />
-              {collapsible && !collapsed ? <span className="truncate">{item.label}</span> : null}
+              <span
+                aria-hidden={collapsible && collapsed}
+                className={cn(
+                  "truncate whitespace-nowrap transition-all duration-200 ease-in-out",
+                  collapsible && collapsed ? "w-0 opacity-0" : "w-auto opacity-100",
+                )}
+              >
+                {item.label}
+              </span>
             </Link>
           );
         })}

@@ -14,8 +14,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { href: "/apply", label: "Apply" },
-  { href: "/login?role=student", label: "Student Login" },
-  { href: "/login?role=admin", label: "Admin Login" },
+  { href: "/login", label: "Login" },
 ];
 
 const mobileNavItems: NavItem[] = navItems.filter((item) => item.label !== "Welcome");

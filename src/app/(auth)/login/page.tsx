@@ -22,7 +22,8 @@ function LoginContent() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const params = useSearchParams();
-  const role = params.get("role") === "admin" ? "admin" : "student";
+  const paramRole = params.get("role");
+  const role = paramRole === "admin" || paramRole === "mentor" ? paramRole : "student";
 
   async function handleSubmit(email: string, password: string): Promise<void> {
     setLoading(true);
@@ -36,6 +37,8 @@ function LoginContent() {
 
       if (role === "admin") {
         router.push("/admin");
+      } else if (role === "mentor") {
+        router.push("/mentor");
       } else {
         router.push("/dashboard");
       }
@@ -54,6 +57,11 @@ function LoginContent() {
             Student Login
           </Button>
         </Link>
+        <Link href="/login?role=mentor" className="flex-1">
+          <Button variant={role === "mentor" ? "primary" : "secondary"} className="w-full">
+            Mentor Login
+          </Button>
+        </Link>
         <Link href="/login?role=admin" className="flex-1">
           <Button variant={role === "admin" ? "primary" : "secondary"} className="w-full">
             Admin Login
@@ -62,19 +70,25 @@ function LoginContent() {
       </div>
 
       <AuthHeader
-        title={role === "admin" ? "Admin Sign In" : "Student Sign In"}
+        title={
+          role === "admin" ? "Admin Sign In" : role === "mentor" ? "Mentor Sign In" : "Student Sign In"
+        }
         subtitle={
           role === "admin"
             ? "Review applications, accept students, and control attendance sessions."
+            : role === "mentor"
+              ? "View assigned courses, students, attendance, and upload course content."
             : "Access your dashboard, attendance QR, assignments, and class updates."
         }
-        {...(role === "admin" ? { adminLabel: "Restricted Access" } : {})}
+        {...(role === "admin" || role === "mentor" ? { adminLabel: "Restricted Access" } : {})}
       />
 
       <div className="space-y-3 border border-border bg-background p-4 font-mono text-caption text-muted">
         <p className="uppercase tracking-[0.08em]">Demo Credentials</p>
         {role === "admin" ? (
           <p>admin@courseflow.dev / AdminPass123</p>
+        ) : role === "mentor" ? (
+          <p>mentor@courseflow.dev / MentorPass123</p>
         ) : (
           <p>student@courseflow.dev / StudentPass123</p>
         )}
@@ -84,10 +98,10 @@ function LoginContent() {
         onSubmit={handleSubmit}
         isLoading={loading}
         error={error}
-        submitLabel={role === "admin" ? "Sign In as Admin" : "Sign In"}
+        submitLabel={role === "admin" ? "Sign In as Admin" : role === "mentor" ? "Sign In as Mentor" : "Sign In"}
       />
 
-      {role === "admin" ? (
+      {role === "admin" || role === "mentor" ? (
         <AuthFooter prompt="Need student access?" linkLabel="Use student login" href="/login?role=student" />
       ) : (
         <AuthFooter prompt="First time here?" linkLabel="Start with welcome" href="/#welcome-section" />

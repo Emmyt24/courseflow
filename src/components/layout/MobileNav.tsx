@@ -88,7 +88,7 @@ export function MobileNav({ items }: Readonly<MobileNavProps>) {
           data-gsap-button="true"
           data-no-gsap="true"
           className={cn(
-            "stack-btn-inverse inline-flex min-h-11 min-w-11 items-center gap-2 border px-4 font-mono text-caption uppercase tracking-[0.08em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white",
+            "stack-btn-inverse flex min-h-11 min-w-11 w-full items-center gap-2 border px-4 font-mono text-caption uppercase tracking-[0.08em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white",
             homeActive ? "stack-btn-inverse-active" : "",
           )}
         >
@@ -97,27 +97,29 @@ export function MobileNav({ items }: Readonly<MobileNavProps>) {
         </Link>
           );
         })()}
-        {items.slice(0, 5).map((item) => {
-          const active = item.match === "exact"
-            ? pathname === item.href
-            : pathname === item.href || pathname.startsWith(`${item.href}/`);
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              data-gsap-button="true"
-              data-no-gsap="true"
-              className={cn(
-                "stack-btn-inverse inline-flex min-h-11 min-w-11 items-center gap-2 border px-4 font-mono text-caption uppercase tracking-[0.08em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white",
-                active ? "stack-btn-inverse-active" : "",
-              )}
-            >
-              <Icon className="h-4 w-4" aria-hidden="true" />
-              <span>{item.label}</span>
-            </Link>
-          );
-        })}
+        <div className="space-y-3">
+          {items.slice(0, 5).map((item) => {
+            const active = item.match === "exact"
+              ? pathname === item.href
+              : pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                data-gsap-button="true"
+                data-no-gsap="true"
+                className={cn(
+                  "stack-btn-inverse flex min-h-11 min-w-11 w-full items-center gap-2 border px-4 font-mono text-caption uppercase tracking-[0.08em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white",
+                  active ? "stack-btn-inverse-active" : "",
+                )}
+              >
+                <Icon className="h-4 w-4" aria-hidden="true" />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
       </aside>
     </>
   );
